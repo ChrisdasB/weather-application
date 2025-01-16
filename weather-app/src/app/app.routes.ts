@@ -25,6 +25,16 @@ export const routes: Routes = [
             m => m.TodosComponent
         );
     }
-}
+},
+{
+    path:"weather",
+    loadComponent: () => {
+        return import('./weather-page/weather-page.component').then(
+            m => m.WeatherPageComponent
+        );
+    }
+},
+
+
    
 ];

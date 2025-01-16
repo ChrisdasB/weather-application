@@ -1,9 +1,10 @@
 <header class="p-10 bg-gray-300">
     <p class="font-semibold">{{messageFromRoot()}}</p>
     <ul>
-        <li [routerLink]="['/']" routerLinkActive="router-link-active" >Home</li>
+        <li class="border w-20 border-cyan-300" [routerLink]="['/']" routerLinkActive="router-link-active" >Home</li>
         <li [routerLink]="['/counter']" routerLinkActive="router-link-active" >Counter</li>
         <li [routerLink]="['/todos']" routerLinkActive="router-link-active" >To Do's</li>
+        <li [routerLink]="['/weather']" routerLinkActive="router-link-active" >Weather</li>
     </ul>
 </header>
 

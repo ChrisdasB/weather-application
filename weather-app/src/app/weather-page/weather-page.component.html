@@ -1,0 +1,84 @@
+<div class="weather-container">
+    <!-- Loading State -->
+    @if (isLoading) {
+      <div class="flex justify-center items-center h-screen text-gray-600">
+        <p class="text-lg font-medium">Loading weather data...</p>
+      </div>
+    } @else {
+      <!-- Weather Data -->
+      @if (weatherData()) {
+        <!-- Location Info -->
+        <section class="location-info bg-gray-100 p-6 rounded-lg shadow-md mb-6">
+          <h2 class="text-xl font-semibold mb-4">Location Information</h2>
+          <p><strong>Latitude:</strong> {{ weatherData()?.latitude }}</p>
+          <p><strong>Longitude:</strong> {{ weatherData()?.longitude }}</p>
+          <p><strong>Timezone:</strong> {{ weatherData()?.timezone }}</p>
+          <p><strong>Elevation:</strong> {{ weatherData()?.elevation }} meters</p>
+        </section>
+  
+        <!-- Hourly Units -->
+        <section class="units-info bg-gray-100 p-6 rounded-lg shadow-md mb-6">
+          <h2 class="text-xl font-semibold mb-4">Units</h2>
+          <ul class="list-disc list-inside">
+            <li><strong>Time:</strong> {{ weatherData()?.hourly_units?.time }}</li>
+            <li><strong>Temperature:</strong> {{ weatherData()?.hourly_units?.temperature_2m }}</li>
+            <li><strong>Precipitation Probability:</strong> {{ weatherData()?.hourly_units?.precipitation_probability }}</li>
+            <li><strong>Precipitation:</strong> {{ weatherData()?.hourly_units?.precipitation }}</li>
+            <li><strong>Weather Code:</strong> {{ weatherData()?.hourly_units?.weather_code }}</li>
+            <li><strong>Wind Speed:</strong> {{ weatherData()?.hourly_units?.wind_speed_10m }}</li>
+          </ul>
+        </section>
+  
+        <!-- Hourly Weather Data -->
+        <section class="daily-info bg-gray-100 p-6 rounded-lg shadow-md">
+            <h2 class="text-xl font-semibold mb-4">Daily Forecast</h2>
+            <div class="grid grid-cols-4 gap-4">
+              <div *ngFor="let day of dailyTemperatures; let i = index" class="col-span-1 mb-4">
+                <div class="bg-white p-4 rounded-lg shadow-md">
+                  <!-- Initially Visible Content -->
+                  <div class="flex justify-between items-center">
+                    <div>
+                      <strong>{{ day.date }}</strong>
+                      <p>High: {{ day.high }}°C</p>
+                      <p>Low: {{ day.low }}°C</p>
+                    </div>
+                    <button
+                      class="text-blue-500 hover:underline focus:outline-none"
+                      (click)="dayExpanded[i] = !dayExpanded[i]"
+                    >
+                      {{ dayExpanded[i] ? 'Collapse' : 'Expand' }}
+                    </button>
+                  </div>
+          
+                  <!-- Expandable Content for Daily Details -->
+                  <div *ngIf="dayExpanded[i]" class="mt-4">
+                    <p>Average Precipitation Probability: {{ calculateAveragePrecipitation(day.date) }}%</p>
+                    <p>Average Wind Speed: {{ calculateAverageWindSpeed(day.date) }} km/h</p>
+          
+                    <!-- Expand Further to Show Hourly Details -->
+                    <button
+                      class="text-blue-500 hover:underline focus:outline-none mt-2"
+                      (click)="hourlyExpanded[i] = !hourlyExpanded[i]"
+                    >
+                      {{ hourlyExpanded[i] ? 'Hide Hourly Details' : 'Show Hourly Details' }}
+                    </button>
+          
+                    <!-- Hourly Details -->
+                    <div *ngIf="hourlyExpanded[i]" class="mt-4 space-y-2">
+                      <div *ngFor="let time of getHourlyDataForDay(day.date).time; let j = index" class="bg-gray-50 p-2 rounded-lg">
+                        <p><strong>{{ time }}</strong></p>
+                        <p>Temperature: {{ getHourlyDataForDay(day.date).temperature_2m[j] }}°C</p>
+                        <p>Precipitation Probability: {{ getHourlyDataForDay(day.date).precipitation_probability[j] }}%</p>
+                        <p>Precipitation: {{ getHourlyDataForDay(day.date).precipitation[j] }} mm</p>
+                        <p>Wind Speed: {{ getHourlyDataForDay(day.date).wind_speed_10m[j] }} km/h</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+      }
+    }
+  </div>
+  
